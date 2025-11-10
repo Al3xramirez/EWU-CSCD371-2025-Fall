@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Assignment;
 
@@ -16,7 +17,7 @@ public class SampleData : ISampleData
             {
                 throw new FileNotFoundException($"CVS file not found: {filePath}");
             }
-            return File.ReadAllLines(filePath);
+            return File.ReadAllLines(filePath).Skip(1);
         }
     }
 
