@@ -1,6 +1,7 @@
 using Assignment;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 namespace Assignment.Tests;
@@ -85,6 +86,46 @@ public class SampleDataTests
         
         var statesExpected = data.GetUniqueSortedListOfStatesGivenCsvRows().ToList();
         CollectionAssert.AreEqual(statesLinqActual, statesExpected);
+    }
+
+    [TestMethod]
+    public void GetAggregateSortedListOfStatesUsingCsvRows_HardcodedRows_Success()
+    {
+        var rows = new[]
+        {
+            "1,Leonel,Messi,LeoMessi@ewu.edu,123 Main St,CityA,WA,98823",
+            "2,Cristiano,Ronaldo,CrisRon@ewu.edu,456 Oak St,CityB,CA,90210",
+            "3,Neymar,Junior,NeyJr@ewu.edu,789 Pine St,CityC,FL,33101",
+            "4,Mark,Zuckerberg, MarkTheLizard@ewu.edu,101 Maple St,CityD,NY,10001",
+        };
+
+        var uniqueStates = rows
+            .Select(row => {
+                var parts = row.Split(',');
+                return parts.Length > 6 ? parts[6].Trim() : string.Empty;
+            })
+            .Where(state => !string.IsNullOrWhiteSpace(state))
+            .Distinct()
+            .OrderBy(state => state)
+            .ToList();
+        string[] statesArray = uniqueStates.ToArray();
+        string result = string.Join(",", statesArray);
+
+        Assert.AreEqual<string>("CA,FL,NY,WA", result);
+
+    }
+
+    [TestMethod]
+    public void GetAggregateSortedListOfStatesUsingCsvRows_LinqVerification_Success()
+    {
+        SampleData data = new();
+        string result = data.GetAggregateSortedListOfStatesUsingCsvRows();
+
+        List<string> statesList = result.Split(',').ToList();
+        List<string> uniqueSortedStates = data.GetUniqueSortedListOfStatesGivenCsvRows().ToList();
+
+        CollectionAssert.AreEqual(uniqueSortedStates, statesList);
+
     }
 
 }
