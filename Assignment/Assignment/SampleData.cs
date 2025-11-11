@@ -24,7 +24,7 @@ public class SampleData : ISampleData
     // 2.
     public IEnumerable<string> GetUniqueSortedListOfStatesGivenCsvRows()
         => CsvRows
-        .Select(row => { 
+        .Select(row => {
             var parts = row.Split(',');
             return parts.Length > 6 ? parts[6].Trim() : string.Empty;
         })
@@ -42,7 +42,46 @@ public class SampleData : ISampleData
     }
 
     // 4.
-    public IEnumerable<IPerson> People => throw new NotImplementedException();
+    public IEnumerable<IPerson> People
+    {
+        get
+        {
+            List<IPerson> people = CsvRows
+                .Select(row =>
+                {
+                    string[] parts = row.Split(',');
+                    if (parts.Length < 8)
+                    {
+                        return null; // skip invalid rows
+                    }
+
+                    IAddress address = new Address(
+                        parts[4].Trim(),
+                        parts[5].Trim(),
+                        parts[6].Trim(),
+                        parts[7].Trim()
+                    );
+
+                    IPerson person = new Person(
+                        parts[1].Trim(),
+                        parts[2].Trim(),
+                        address,
+                        parts[3].Trim()
+                    );
+
+                    return person;
+                })
+                .Where(p => p != null) // filter out nulls
+                .Cast<IPerson>()        // tell compiler that after filtering, it's safe
+                .OrderBy(p => p.Address.State)
+                .ThenBy(p => p.Address.City)
+                .ThenBy(p => p.Address.Zip)
+                .ToList();
+
+            return people;
+        }
+    }
+
 
     // 5.
     public IEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(
