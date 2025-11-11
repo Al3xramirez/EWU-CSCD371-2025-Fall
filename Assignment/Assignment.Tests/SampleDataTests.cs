@@ -69,6 +69,37 @@ public class SampleDataTests
     }
 
     [TestMethod]
+    public void GetUniqueSortedListOfStatesGivenCsvRows_Duplicates_ReturnsUniqueStates()
+    {
+
+        var rows = new[]
+        {
+            "1,Leonel,Messi,LeoMessi@ewu.edu,123 Main St,CityA,NY,98823",
+            "2,Cristiano,Ronaldo,CrisRon@ewu.edu,456 Oak St,CityB,CA,90210",
+            "3,Neymar,Junior,NeyJr@ewu.edu,789 Pine St,CityC,NY,33101",
+            "4,Mark,Zuckerberg, MarkTheLizard@ewu.edu,101 Maple St,CityD,NY,10001",
+        };
+
+        var actualStates = rows
+            .Select(row =>
+            {
+                var parts = row.Split(',');
+                return parts.Length > 6 ? parts[6].Trim() : string.Empty;
+            })
+            .Where(state => !string.IsNullOrWhiteSpace(state))
+            .Distinct()
+            .OrderBy(state => state)
+            .ToList();
+
+        var expectedStates = new[]
+        {
+            "CA","NY"
+        };
+
+        CollectionAssert.AreEqual(expectedStates, actualStates);
+    }
+
+    [TestMethod]
     // Using LINQ to verify the method GetUniqueSortedListOfStatesGivenCsvRows
     public void GetUniqueSortedListOfStatesGivenCsvRows_LinqVerification_Success() {
         
@@ -112,6 +143,33 @@ public class SampleDataTests
         string result = string.Join(",", statesArray);
 
         Assert.AreEqual<string>("CA,FL,NY,WA", result);
+
+    }
+
+    [TestMethod]
+    public void GetAggregateSortedListOfStatesUsingCsvRows_Duplicates_ReturnsUniqueStates()
+    {
+        var rows = new[]
+        {
+            "1,Leonel,Messi,LeoMessi@ewu.edu,123 Main St,CityA,WA,98823",
+            "2,Cristiano,Ronaldo,CrisRon@ewu.edu,456 Oak St,CityB,CA,90210",
+            "3,Neymar,Junior,NeyJr@ewu.edu,789 Pine St,CityC,WA,33101",
+            "4,Mark,Zuckerberg, MarkTheLizard@ewu.edu,101 Maple St,CityD,WA,10001",
+        };
+
+        var uniqueStates = rows
+            .Select(row => {
+                var parts = row.Split(',');
+                return parts.Length > 6 ? parts[6].Trim() : string.Empty;
+            })
+            .Where(state => !string.IsNullOrWhiteSpace(state))
+            .Distinct()
+            .OrderBy(state => state)
+            .ToList();
+        string[] statesArray = uniqueStates.ToArray();
+        string result = string.Join(",", statesArray);
+
+        Assert.AreEqual<string>("CA,WA", result);
 
     }
 
