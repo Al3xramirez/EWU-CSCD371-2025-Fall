@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 namespace Assignment.Tests;
 
 [TestClass]
@@ -187,7 +188,6 @@ public class SampleDataTests
     }
 
     [TestMethod]
-
     public void FilterByEmailAddress_ValidFilter_Success()
     {
         SampleData data = new();
@@ -215,6 +215,17 @@ public class SampleDataTests
         Assert.IsEmpty(filteredNames);
     }
 
+    [TestMethod]
 
+    public void GetAggregateListOfStatesGivenPeopleCollection_Sucess()
+    {
 
-}
+        SampleData data = new();
+
+        string result = data.GetAggregateListOfStatesGivenPeopleCollection(data.People);
+
+        List<string> aggregateState = data.GetUniqueSortedListOfStatesGivenCsvRows().ToList();
+
+        Assert.AreEqual<string>(result, string.Join(",", aggregateState));
+    }
+    }
