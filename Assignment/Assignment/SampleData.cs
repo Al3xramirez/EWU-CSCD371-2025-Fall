@@ -96,5 +96,19 @@ public class SampleData : ISampleData
 
     // 6.
     public string GetAggregateListOfStatesGivenPeopleCollection(
-        IEnumerable<IPerson> people) => throw new NotImplementedException();
+        IEnumerable<IPerson> people)
+    {
+        ArgumentNullException.ThrowIfNull(people);
+
+        IEnumerable<string> uniqueStates = people
+            .Select(p => p.Address.State)
+            .Where(state => !string.IsNullOrWhiteSpace(state))
+            .Distinct()
+            .OrderBy(state => state);
+
+        string[] statesArray = uniqueStates.ToArray();
+        return statesArray.Aggregate((current, next) => current + "," + next);
+       
+
+    }
 }
