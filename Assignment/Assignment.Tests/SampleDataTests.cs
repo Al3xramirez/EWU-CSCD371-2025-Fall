@@ -194,7 +194,7 @@ public class SampleDataTests
         Predicate<string> filter = email => email.EndsWith("@Stanford.edu");
         var filteredNames = data.FilterByEmailAddress(filter).ToList();
 
-        // Verify that all returned email addresses end with @stanford.edu
+        // Verify that all returned email addresses end with @Stanford.edu
         foreach (var (FirstName, LastName) in filteredNames)
         {
             var person = data.People.FirstOrDefault(p => p.FirstName == FirstName && p.LastName == LastName);

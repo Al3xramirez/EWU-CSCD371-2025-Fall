@@ -87,9 +87,7 @@ public class SampleData : ISampleData
     public IEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(
         Predicate<string> filter)
     {
-        if (filter == null) {
-            throw new ArgumentNullException(nameof(filter));
-        }
+        ArgumentNullException.ThrowIfNull(nameof(filter));
 
         return People
             .Where(p => filter(p.EmailAddress)) //filters by email address
