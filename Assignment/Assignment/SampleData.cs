@@ -85,7 +85,16 @@ public class SampleData : ISampleData
 
     // 5.
     public IEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(
-        Predicate<string> filter) => throw new NotImplementedException();
+        Predicate<string> filter)
+    {
+        if (filter == null) {
+            throw new ArgumentNullException(nameof(filter));
+        }
+
+        return People
+            .Where(p => filter(p.EmailAddress)) //filters by email address
+            .Select(p => (p.FirstName, p.LastName));
+    }
 
     // 6.
     public string GetAggregateListOfStatesGivenPeopleCollection(

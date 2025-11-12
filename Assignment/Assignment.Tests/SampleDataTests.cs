@@ -186,4 +186,35 @@ public class SampleDataTests
 
     }
 
+    [TestMethod]
+
+    public void FilterByEmailAddress_ValidFilter_Success()
+    {
+        SampleData data = new();
+        Predicate<string> filter = email => email.EndsWith("@Stanford.edu");
+        var filteredNames = data.FilterByEmailAddress(filter).ToList();
+
+        // Verify that all returned email addresses end with @stanford.edu
+        foreach (var (FirstName, LastName) in filteredNames)
+        {
+            var person = data.People.FirstOrDefault(p => p.FirstName == FirstName && p.LastName == LastName);
+            
+            Assert.IsNotNull(person);
+            Assert.IsTrue(filter(person.EmailAddress));
+            Assert.AreEqual<string>("Stanford.edu", person.EmailAddress.Split('@')[1]);
+          
+        }
+    }
+
+    [TestMethod]
+    public void FilterByEmailAddress_NoMatches_ReturnsEmpty()
+    {
+        SampleData data = new();
+        Predicate<string> filter = email => email.EndsWith("@67.com");
+        var filteredNames = data.FilterByEmailAddress(filter).ToList();
+        Assert.IsEmpty(filteredNames);
+    }
+
+
+
 }
