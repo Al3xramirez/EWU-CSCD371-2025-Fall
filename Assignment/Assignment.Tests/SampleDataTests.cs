@@ -148,6 +148,63 @@ public class SampleDataTests
     }
 
     [TestMethod]
+    public void People_RecordsSortedByStateCityZip_Success()
+    {
+        // Arrange
+        SampleData data = new();
+        var people = data.People.ToList();
+
+        // Act
+        var expectedOrder = people
+            .OrderBy(p => p.Address.State)
+            .ThenBy(p => p.Address.City)
+            .ThenBy(p => p.Address.Zip)
+            .ToList();
+
+        // Assert
+        CollectionAssert.AreEqual(expectedOrder, people);
+    }
+
+    [TestMethod]
+    public void People_ValidCsvRows_ReturnsCorrectFirstPerson()
+    {
+        // Arrange
+        SampleData data = new();
+        var people = data.People.ToList();
+
+        // Act
+        var firstPerson = people.First();
+
+        // Assert
+        Assert.AreEqual<string>("Arthur", firstPerson.FirstName);
+        Assert.AreEqual<string>("Myles", firstPerson.LastName);
+        Assert.AreEqual<string>("amyles1c@miibeian.gov.cn", firstPerson.EmailAddress);
+        Assert.AreEqual<string>("Mobile", firstPerson.Address.City);
+        Assert.AreEqual<string>("AL", firstPerson.Address.State);
+        Assert.AreEqual<string>("37308", firstPerson.Address.Zip);
+    }
+
+    [TestMethod]
+    public void People_ValidCsvRows_ReturnsCorrectLastPerson()
+    {
+        // Arrange
+        SampleData data = new();
+        var people = data.People.ToList();
+
+        // Act
+        var firstPerson = people.Last();
+
+        // Assert
+        Assert.AreEqual<string>("Amelia", firstPerson.FirstName);
+        Assert.AreEqual<string>("Toal", firstPerson.LastName);
+        Assert.AreEqual<string>("atoall@fema.gov", firstPerson.EmailAddress);
+        Assert.AreEqual<string>("Huntington", firstPerson.Address.City);
+        Assert.AreEqual<string>("WV", firstPerson.Address.State);
+        Assert.AreEqual<string>("44302", firstPerson.Address.Zip);
+    }
+
+
+    [TestMethod]
     public void GetAggregateSortedListOfStatesUsingCsvRows_Duplicates_ReturnsUniqueStates()
     {
         var rows = new[]
@@ -228,4 +285,13 @@ public class SampleDataTests
 
         Assert.AreEqual<string>(result, string.Join(",", aggregateState));
     }
+
+    [TestMethod]
+    public void GetAggregateListOfStatesGivenPeopleCollection_EmptyList_ReturnsEmptyString()
+    {
+        SampleData data = new();
+        string result = data.GetAggregateListOfStatesGivenPeopleCollection(new List<IPerson>());
+        Assert.AreEqual(string.Empty, result);
     }
+
+}
