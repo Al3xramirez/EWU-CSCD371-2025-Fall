@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Assignment;
 
-public class Node<T>
+public class Node<T> : IEnumerable<T>
 {
     public T Value { get; }
     public Node<T> Next { get; private set; }
@@ -64,5 +66,19 @@ public class Node<T>
 
         return false;
     }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        Node<T> current = this;
+        do
+        {
+            yield return current.Value;
+            current = current.Next;
+        }
+        while (current != this);
+    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+
 }
 
