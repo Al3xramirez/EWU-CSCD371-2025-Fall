@@ -79,6 +79,18 @@ public class Node<T> : IEnumerable<T>
     }
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-
+    public IEnumerable<T> ChildItems(int maximum)
+    {
+        if (maximum < 0)
+            throw new ArgumentOutOfRangeException(nameof(maximum));
+        Node<T> current = this.Next;
+        int count = 0;
+        while (current != this && count < maximum)
+        {
+            yield return current.Value;
+            current = current.Next;
+            count++;
+        }
+    }
 }
 
