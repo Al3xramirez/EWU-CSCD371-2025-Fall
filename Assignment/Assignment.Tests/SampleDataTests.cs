@@ -228,4 +228,5 @@ public class SampleDataTests
 
         Assert.AreEqual<string>(result, string.Join(",", aggregateState));
     }
+
     }

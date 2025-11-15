@@ -98,8 +98,9 @@ public class SampleData : ISampleData
     public string GetAggregateListOfStatesGivenPeopleCollection(
         IEnumerable<IPerson> people)
     {
+        ArgumentNullException.ThrowIfNull(nameof(people));
 
-       IEnumerable<string> uniqueStates = people
+        IEnumerable<string> uniqueStates = people
             .Select(p => p.Address.State)
             .Where(state => !string.IsNullOrWhiteSpace(state))
             .Distinct()
