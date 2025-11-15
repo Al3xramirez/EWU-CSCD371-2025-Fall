@@ -126,4 +126,16 @@ public class NodeTests
         CollectionAssert.AreEqual(expectedList, result);
     }
 
+    [TestMethod]
+
+    public void Exists_ValueExists_ReturnsTrue()
+    {
+        Node<string> node = new("apple");
+        node.Append("banana");
+        node.Append("cherry");
+        bool exists = node.Exists("banana");
+        Assert.IsTrue(exists);
+    }
+
+
 }
