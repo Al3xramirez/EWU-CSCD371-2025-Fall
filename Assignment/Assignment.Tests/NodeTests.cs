@@ -86,4 +86,44 @@ public class NodeTests
         //var result = node.ChildItems(-5).ToList();
     //}
 
+    [TestMethod]
+    public void Append_List_Success()
+    {
+        Node<int> node = new(1);
+        node.Append(2);
+        node.Append(3);
+        List<int> result = node.ToList();
+        List<int> expectedList = new() { 1, 3, 2 };
+        CollectionAssert.AreEqual(expectedList, result);
+    }
+
+    [TestMethod]
+    public void Append_DuplicateValue_ThrowsException() { 
+        
+        Node<string> node = new("apple");
+        node.Append("banana");
+        node.Append("cherry");
+        try
+        {
+            node.Append("banana");
+            Assert.Fail("Expected InvalidOperationException was not thrown.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            Assert.AreEqual<string>("Duplicate value detected", ex.Message);
+        }
+    }
+
+    [TestMethod]
+    public void Clear_List_Success()
+    {
+        Node<int> node = new(1);
+        node.Append(2);
+        node.Append(3);
+        node.Clear();
+        List<int> result = node.ToList();
+        List<int> expectedList = new() { 1 };
+        CollectionAssert.AreEqual(expectedList, result);
+    }
+
 }

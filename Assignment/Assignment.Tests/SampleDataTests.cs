@@ -35,12 +35,13 @@ public class SampleDataTests
         Assert.HasCount(50, dataRows);
     }
 
-    
+
 
     [TestMethod]
     // Using hardcoded CSV rows to verify unique sorted list of states
-    public void GetUniqueSortedListOfStatesGivenCsvRows_HardcodedRows_Success() {
-        
+    public void GetUniqueSortedListOfStatesGivenCsvRows_HardcodedRows_Success()
+    {
+
         var rows = new[]
         {
             "1,Leonel,Messi,LeoMessi@ewu.edu,123 Main St,CityA,WA,98823",
@@ -50,7 +51,8 @@ public class SampleDataTests
         };
 
         var actualStates = rows
-            .Select(row => {
+            .Select(row =>
+            {
                 var parts = row.Split(',');
                 return parts.Length > 6 ? parts[6].Trim() : string.Empty;
             })
@@ -102,12 +104,14 @@ public class SampleDataTests
 
     [TestMethod]
     // Using LINQ to verify the method GetUniqueSortedListOfStatesGivenCsvRows
-    public void GetUniqueSortedListOfStatesGivenCsvRows_LinqVerification_Success() {
-        
+    public void GetUniqueSortedListOfStatesGivenCsvRows_LinqVerification_Success()
+    {
+
         SampleData data = new();
 
         var statesLinqActual = data.CsvRows
-            .Select(row => {
+            .Select(row =>
+            {
                 var parts = row.Split(',');
                 return parts.Length > 6 ? parts[6].Trim() : string.Empty;
             })
@@ -115,7 +119,7 @@ public class SampleDataTests
             .Distinct()
             .OrderBy(state => state)
             .ToList();
-        
+
         var statesExpected = data.GetUniqueSortedListOfStatesGivenCsvRows().ToList();
         CollectionAssert.AreEqual(statesLinqActual, statesExpected);
     }
@@ -132,7 +136,8 @@ public class SampleDataTests
         };
 
         var uniqueStates = rows
-            .Select(row => {
+            .Select(row =>
+            {
                 var parts = row.Split(',');
                 return parts.Length > 6 ? parts[6].Trim() : string.Empty;
             })
@@ -216,7 +221,8 @@ public class SampleDataTests
         };
 
         var uniqueStates = rows
-            .Select(row => {
+            .Select(row =>
+            {
                 var parts = row.Split(',');
                 return parts.Length > 6 ? parts[6].Trim() : string.Empty;
             })
@@ -255,11 +261,11 @@ public class SampleDataTests
         foreach (var (FirstName, LastName) in filteredNames)
         {
             var person = data.People.FirstOrDefault(p => p.FirstName == FirstName && p.LastName == LastName);
-            
+
             Assert.IsNotNull(person);
             Assert.IsTrue(filter(person.EmailAddress));
             Assert.AreEqual<string>("Stanford.edu", person.EmailAddress.Split('@')[1]);
-          
+
         }
     }
 
@@ -294,4 +300,21 @@ public class SampleDataTests
         Assert.AreEqual(string.Empty, result);
     }
 
+    [TestMethod]
+    public void GetAggregateListOfStatesGivenPeopleCollection_DuplicateStates_ReturnsUniqueStates()
+    {
+        SampleData data = new();
+
+        var people = new List<IPerson>
+        {
+            new Person("John", "Doe", new Address("123 Main St", "CityA", "CA", "90001"), "email@gmail.com"),
+            new Person("Jane", "Smith", new Address("456 Oak St", "CityB", "CA", "90002"), "C#@gmail.com"),
+            new Person("Alice", "Johnson", new Address("789 Pine St", "CityC", "NY", "10001"), "Java@gmail.com")
+
+        };
+        
+       string result = data.GetAggregateListOfStatesGivenPeopleCollection(people);
+       Assert.AreEqual<string>("CA,NY", result);
+
+    }
 }
