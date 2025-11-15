@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+//using static System.Net.WebRequestMethods;
 
 namespace Assignment;
 
@@ -15,7 +16,7 @@ public class SampleData : ISampleData
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv");
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException($"CVS file not found: {filePath}");
+                throw new FileNotFoundException($"CSV file not found: {filePath}");
             }
             return File.ReadAllLines(filePath).Skip(1);
         }
@@ -107,7 +108,9 @@ public class SampleData : ISampleData
             .OrderBy(state => state);
 
         string[] statesArray = uniqueStates.ToArray();
-        return statesArray.Aggregate((current, next) => current + "," + next);
+        return statesArray.Length == 0 
+            ? string.Empty 
+            : statesArray.Aggregate((current, next) => current + "," + next);
         
 
     }
