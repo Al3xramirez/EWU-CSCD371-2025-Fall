@@ -76,15 +76,6 @@ public class NodeTests
         CollectionAssert.AreEqual(expectedList, result);
     }
 
-    
-    //[ExpectedException(typeof(ArgumentOutOfRangeException))]
-    //public void Node_ChildItems_MaxNegative_ThrowsException()
-    //{
-        //Node<int> node = new(1);
-        //node.Append(2);
-
-        //var result = node.ChildItems(-5).ToList();
-    //}
 
     [TestMethod]
     public void Append_List_Success()
