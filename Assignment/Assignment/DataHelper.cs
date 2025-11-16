@@ -54,8 +54,8 @@ namespace Assignment
                         parts[7].Trim()
                     );
                     return new Person(
-                        parts[0].Trim(),
                         parts[1].Trim(),
+                        parts[2].Trim(),
                         address,
                         parts[3].Trim()
                     );

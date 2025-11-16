@@ -2,36 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-//using static System.Net.WebRequestMethods;
 
 namespace Assignment;
 
 public class SampleData : ISampleData
 {
     // 1.
-    public IEnumerable<string> CsvRows
-    {
-        get
-        {
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv");
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"CSV file not found: {filePath}");
-            }
-            return File.ReadAllLines(filePath).Skip(1);
-        }
-    }
+    public IEnumerable<string> CsvRows =>
+        DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv"));
 
     // 2.
-    public IEnumerable<string> GetUniqueSortedListOfStatesGivenCsvRows()
-        => CsvRows
-        .Select(row => {
-            var parts = row.Split(',');
-            return parts.Length > 6 ? parts[6].Trim() : string.Empty;
-        })
-        .Where(state => !string.IsNullOrWhiteSpace(state))
-        .Distinct()
-        .OrderBy(state => state);
+    public IEnumerable<string> GetUniqueSortedListOfStatesGivenCsvRows() =>
+        DataHelper.ExtractStates(CsvRows);
 
     // 3.
     public string GetAggregateSortedListOfStatesUsingCsvRows()
@@ -43,46 +25,12 @@ public class SampleData : ISampleData
     }
 
     // 4.
-    public IEnumerable<IPerson> People
-    {
-        get
-        {
-            List<IPerson> people = CsvRows
-                .Select(row =>
-                {
-                    string[] parts = row.Split(',');
-                    if (parts.Length < 8)
-                    {
-                        return null; // skip invalid rows
-                    }
-
-                    IAddress address = new Address(
-                        parts[4].Trim(),
-                        parts[5].Trim(),
-                        parts[6].Trim(),
-                        parts[7].Trim()
-                    );
-
-                    IPerson person = new Person(
-                        parts[1].Trim(),
-                        parts[2].Trim(),
-                        address,
-                        parts[3].Trim()
-                    );
-
-                    return person;
-                })
-                .Where(p => p != null) // filter out nulls
-                .Cast<IPerson>()        // tell compiler that after filtering, it's safe
-                .OrderBy(p => p.Address.State)
-                .ThenBy(p => p.Address.City)
-                .ThenBy(p => p.Address.Zip)
-                .ToList();
-
-            return people;
-        }
-    }
-
+    public IEnumerable<IPerson> People =>
+       DataHelper.ExtractPeople(CsvRows)
+           .OrderBy(p => p.Address.State)
+           .ThenBy(p => p.Address.City)
+           .ThenBy(p => p.Address.Zip)
+           .ToList();
 
     // 5.
     public IEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(
@@ -111,7 +59,5 @@ public class SampleData : ISampleData
         return statesArray.Length == 0 
             ? string.Empty 
             : statesArray.Aggregate((current, next) => current + "," + next);
-        
-
     }
 }
