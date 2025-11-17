@@ -254,7 +254,7 @@ public class SampleDataTests
     public void FilterByEmailAddress_ValidFilter_Success()
     {
         SampleData data = new();
-        Predicate<string> filter = email => email.EndsWith("@Stanford.edu");
+        Predicate<string> filter = email => email.EndsWith("@Stanford.edu", StringComparison.OrdinalIgnoreCase);
         var filteredNames = data.FilterByEmailAddress(filter).ToList();
 
         // Verify that all returned email addresses end with @Stanford.edu
@@ -273,7 +273,7 @@ public class SampleDataTests
     public void FilterByEmailAddress_NoMatches_ReturnsEmpty()
     {
         SampleData data = new();
-        Predicate<string> filter = email => email.EndsWith("@67.com");
+        Predicate<string> filter = email => email.EndsWith("@67.com", StringComparison.OrdinalIgnoreCase);
         var filteredNames = data.FilterByEmailAddress(filter).ToList();
         Assert.IsEmpty(filteredNames);
     }

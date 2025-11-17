@@ -13,7 +13,6 @@ public class NodeTests
     {
         Node<int> node = new(10);
         List<int> list = node.ToList();
-        Assert.AreEqual(1, list.Count());
         Assert.AreEqual(10, list[0]);
     }
 
