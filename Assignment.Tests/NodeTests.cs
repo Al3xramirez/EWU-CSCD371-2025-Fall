@@ -9,7 +9,7 @@ namespace Assignment.Tests;
 public class NodeTests
 {
     [TestMethod]
-    public void GetEnumerator_SingleNode_Succes()
+    public void GetEnumerator_SingleNode_Success()
     {
         Node<int> node = new(10);
         List<int> list = node.ToList();
