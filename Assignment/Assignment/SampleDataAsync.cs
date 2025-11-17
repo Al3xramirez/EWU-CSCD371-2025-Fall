@@ -47,23 +47,79 @@ public class SampleDataAsync : IAsyncSampleData
     }
 
     // 3.
-    public string GetAggregateSortedListOfStatesUsingCsvRows()
+    public async Task<string> GetAggregateSortedListOfStatesUsingCsvRows()
     {
-        throw new NotImplementedException();
+        var rows = new List<string>();
+
+        await foreach (var row in CsvRows)
+            rows.Add(row);
+
+        // Reuse your existing sync logic
+        var sortedStates = DataHelper.ExtractStates(rows).ToList();
+
+        return sortedStates.Count == 0
+            ? string.Empty
+            : string.Join(",", sortedStates);
     }
 
     // 4.
-    public IAsyncEnumerable<IPerson> People => throw new NotImplementedException();
+    public IAsyncEnumerable<IPerson> People => GetPeopleAsync();
+
+    private async IAsyncEnumerable<IPerson> GetPeopleAsync()
+    {
+        var rows = new List<string>();
+        await foreach (var row in CsvRows)
+            rows.Add(row);
+        foreach (var person in DataHelper.ExtractPeople(rows))
+            yield return person;
+    }
+
 
     // 5.
     public IAsyncEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(Predicate<string> filter)
     {
-        throw new NotImplementedException();
+        if (filter is null)
+            throw new ArgumentNullException(nameof(filter));
+
+        return FilterByEmailAsync(filter);
+    }
+
+    private async IAsyncEnumerable<(string FirstName, string LastName)> FilterByEmailAsync(Predicate<string> filter)
+    {
+        await foreach (var person in People)
+        {
+            if (filter(person.EmailAddress))
+                yield return (person.FirstName, person.LastName);
+        }
     }
 
     // 6.
     public string GetAggregateListOfStatesGivenPeopleCollection(IAsyncEnumerable<IPerson> people)
     {
-        throw new NotImplementedException();
+        if (people is null)
+            throw new ArgumentNullException(nameof(people));
+
+        return GetAggregateStatesAsync(people).GetAwaiter().GetResult();
+    }
+
+    private async Task<string> GetAggregateStatesAsync(IAsyncEnumerable<IPerson> people)
+    {
+        var states = new List<string>();
+
+        await foreach (var p in people)
+        {
+            if (!string.IsNullOrWhiteSpace(p.Address.State))
+                states.Add(p.Address.State.Trim());
+        }
+
+        var uniqueSorted = states
+            .Distinct()
+            .OrderBy(s => s)
+            .ToList();
+
+        if (uniqueSorted.Count == 0)
+            return string.Empty;
+
+        return string.Join(",", uniqueSorted);
     }
 }

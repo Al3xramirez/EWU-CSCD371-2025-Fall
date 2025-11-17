@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Assignment;
 
@@ -12,7 +13,7 @@ public interface IAsyncSampleData
     IAsyncEnumerable<string> GetUniqueSortedListOfStatesGivenCsvRows();
 
     // 3.
-    string GetAggregateSortedListOfStatesUsingCsvRows();
+    Task<string> GetAggregateSortedListOfStatesUsingCsvRows();
 
     // 4.
     IAsyncEnumerable<IPerson> People { get; }
