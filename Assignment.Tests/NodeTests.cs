@@ -36,10 +36,10 @@ public class NodeTests
         node.Append("blackberry");
         node.Append("mango");
         node.Append("strawberry");
-        node.Append("rasberry");
+        node.Append("raspberry");
 
         var longFruits = node.Where(f => f.Length > 5).ToList();
-        List<string> expectedList = new() { "rasberry", "strawberry", "blackberry", "orange" };
+        List<string> expectedList = new() { "raspberry", "strawberry", "blackberry", "orange" };
         CollectionAssert.AreEqual (expectedList, longFruits);
     }
 
