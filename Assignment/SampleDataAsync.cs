@@ -78,8 +78,7 @@ public class SampleDataAsync : IAsyncSampleData
     // 5.
     public IAsyncEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(Predicate<string> filter)
     {
-        if (filter is null)
-            throw new ArgumentNullException(nameof(filter));
+        ArgumentNullException.ThrowIfNull(filter);
 
         return FilterByEmailAsync(filter);
     }
@@ -96,13 +95,12 @@ public class SampleDataAsync : IAsyncSampleData
     // 6.
     public string GetAggregateListOfStatesGivenPeopleCollection(IAsyncEnumerable<IPerson> people)
     {
-        if (people is null)
-            throw new ArgumentNullException(nameof(people));
+        ArgumentNullException.ThrowIfNull(people);
 
         return GetAggregateStatesAsync(people).GetAwaiter().GetResult();
     }
 
-    private async Task<string> GetAggregateStatesAsync(IAsyncEnumerable<IPerson> people)
+    private static async Task<string> GetAggregateStatesAsync(IAsyncEnumerable<IPerson> people)
     {
         var states = new List<string>();
 
