@@ -44,26 +44,20 @@ public class SampleDataAsync : IAsyncSampleData
     }
 
     // 3.
-    public string GetAggregateSortedListOfStatesUsingCsvRows()
+    public async Task<string> GetAggregateSortedListOfStatesUsingCsvRows()
     {
         List<string> rows = new();
 
-        var enumerator = CsvRows.GetAsyncEnumerator();
-        try
+        await foreach (var row in CsvRows)
         {
-            while (enumerator.MoveNextAsync().AsTask().Result)
-                rows.Add(enumerator.Current);
-        }
-        finally
-        {
-            enumerator.DisposeAsync().AsTask().Wait();
+            rows.Add(row);
         }
 
         var states = DataHelper.ExtractStates(rows).ToList();
 
         return states.Count == 0
             ? string.Empty
-            : string.Join(",", states);
+            : string.Join(", ", states);
     }
 
     // 4.
@@ -82,7 +76,7 @@ public class SampleDataAsync : IAsyncSampleData
     // 5.
     public IAsyncEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(Predicate<string> filter)
     {
-        ArgumentNullException.ThrowIfNull(filter));
+        ArgumentNullException.ThrowIfNull(filter);
 
         return FilterByEmailAsync(filter);
     }
