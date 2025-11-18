@@ -77,8 +77,7 @@ public class Node<T> : IEnumerable<T>
 
     public IEnumerable<T> ChildItems(int maximum)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(maximum);
-
+        ArgumentOutOfRangeException.ThrowIfNegative(maximum, nameof(maximum));
         Node<T> current = this.Next;
         int count = 0;
         while (current != this && count < maximum)
