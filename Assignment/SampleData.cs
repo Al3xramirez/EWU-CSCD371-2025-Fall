@@ -36,7 +36,7 @@ public class SampleData : ISampleData
     public IEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(
         Predicate<string> filter)
     {
-        ArgumentNullException.ThrowIfNull(nameof(filter));
+        ArgumentNullException.ThrowIfNull(filter);
 
         return People
             .Where(p => filter(p.EmailAddress)) //filters by email address
@@ -47,7 +47,7 @@ public class SampleData : ISampleData
     public string GetAggregateListOfStatesGivenPeopleCollection(
         IEnumerable<IPerson> people)
     {
-        ArgumentNullException.ThrowIfNull(nameof(people));
+        ArgumentNullException.ThrowIfNull(people);
 
         IEnumerable<string> uniqueStates = people
             .Select(p => p.Address.State)
