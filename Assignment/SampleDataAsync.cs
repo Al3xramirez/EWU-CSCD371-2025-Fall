@@ -44,18 +44,26 @@ public class SampleDataAsync : IAsyncSampleData
     }
 
     // 3.
-    public async Task<string> GetAggregateSortedListOfStatesUsingCsvRows()
+    public string GetAggregateSortedListOfStatesUsingCsvRows()
     {
-        var rows = new List<string>();
+        List<string> rows = new();
 
-        await foreach (var row in CsvRows)
-            rows.Add(row);
+        var enumerator = CsvRows.GetAsyncEnumerator();
+        try
+        {
+            while (enumerator.MoveNextAsync().AsTask().Result)
+                rows.Add(enumerator.Current);
+        }
+        finally
+        {
+            enumerator.DisposeAsync().AsTask().Wait();
+        }
 
-        var sortedStates = DataHelper.ExtractStates(rows).ToList();
+        var states = DataHelper.ExtractStates(rows).ToList();
 
-        return sortedStates.Count == 0
+        return states.Count == 0
             ? string.Empty
-            : string.Join(",", sortedStates);
+            : string.Join(",", states);
     }
 
     // 4.
@@ -74,8 +82,7 @@ public class SampleDataAsync : IAsyncSampleData
     // 5.
     public IAsyncEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(Predicate<string> filter)
     {
-        if (filter is null)
-            throw new ArgumentNullException(nameof(filter));
+        ArgumentNullException.ThrowIfNull(filter));
 
         return FilterByEmailAsync(filter);
     }
@@ -92,30 +99,41 @@ public class SampleDataAsync : IAsyncSampleData
     // 6.
     public string GetAggregateListOfStatesGivenPeopleCollection(IAsyncEnumerable<IPerson> people)
     {
-        if (people is null)
-            throw new ArgumentNullException(nameof(people));
+        ArgumentNullException.ThrowIfNull(people);
 
-        return GetAggregateStatesAsync(people).GetAwaiter().GetResult();
-    }
+    
+        List<string> collectedStates = new();
 
-    private async Task<string> GetAggregateStatesAsync(IAsyncEnumerable<IPerson> people)
-    {
-        var states = new List<string>();
-
-        await foreach (var p in people)
+        var asyncEnum = people.GetAsyncEnumerator();
+        try
         {
-            if (!string.IsNullOrWhiteSpace(p.Address.State))
-                states.Add(p.Address.State.Trim());
+            // Extract states synchronously from async source
+            while (true)
+            {
+                var move = asyncEnum.MoveNextAsync();
+
+                if (!move.AsTask().Result)
+                    break;
+
+                var current = asyncEnum.Current;
+                var state = current.Address.State?.Trim();
+
+                if (!string.IsNullOrWhiteSpace(state))
+                    collectedStates.Add(state);
+            }
+        }
+        finally
+        {
+            // Proper cleanup
+            asyncEnum.DisposeAsync().AsTask().Wait();
         }
 
-        var uniqueSorted = states
-            .Distinct()
-            .OrderBy(s => s)
-            .ToList();
+        // Process the list: unique + sorted
+        var finalStates = collectedStates
+            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(s => s, StringComparer.OrdinalIgnoreCase);
 
-        if (uniqueSorted.Count == 0)
-            return string.Empty;
-
-        return uniqueSorted.Skip(1).Aggregate(uniqueSorted.First(), (acc, state) => $"{acc}, {state}");
+        return string.Join(", ", finalStates);
     }
 }

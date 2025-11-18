@@ -13,7 +13,7 @@ public interface IAsyncSampleData
     IAsyncEnumerable<string> GetUniqueSortedListOfStatesGivenCsvRows();
 
     // 3.
-    Task<string> GetAggregateSortedListOfStatesUsingCsvRows();
+    string GetAggregateSortedListOfStatesUsingCsvRows();
 
     // 4.
     IAsyncEnumerable<IPerson> People { get; }
