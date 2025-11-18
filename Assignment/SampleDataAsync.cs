@@ -120,6 +120,8 @@ public class SampleDataAsync : IAsyncSampleData
         if (uniqueSorted.Count == 0)
             return string.Empty;
 
-        return string.Join(",", uniqueSorted);
+        return uniqueSorted.Skip(1).Aggregate(uniqueSorted.First(), (acc, state) => $"{acc}, {state}");
     }
+
+    
 }

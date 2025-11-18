@@ -294,7 +294,7 @@ public class SampleDataTests
 
     [TestMethod]
 
-    public void GetAggregateListOfStatesGivenPeopleCollection_Sucess()
+    public void GetAggregateListOfStatesGivenPeopleCollection_Success()
     {
 
         SampleData data = new();
