@@ -52,7 +52,7 @@ public class SampleDataAsyncTests
         CollectionAssert.AreEqual(expected, actual.ToList());
     }
 
-    private async IAsyncEnumerable<T> ToAsyncEnumerable<T>(IEnumerable<T> source)
+    private static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(IEnumerable<T> source)
     {
         foreach (var item in source)
         {
