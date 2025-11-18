@@ -107,7 +107,7 @@ public class SampleDataAsyncTests
     
         Predicate<string> filter = email => email.EndsWith(".com", StringComparison.OrdinalIgnoreCase);
 
-        var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "people.csv"));
+        var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv"));
         
         var expected = DataHelper.ExtractPeople(csvRows)
             .Where(Person => filter(Person.EmailAddress))
@@ -123,7 +123,7 @@ public class SampleDataAsyncTests
     [TestMethod]
     public async Task GetAggregateListOfStatesGivenPeopleCollection_ReturnsStatesAsync() {
 
-        var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "people.csv"));
+        var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv"));
         var people = DataHelper.ExtractPeople(csvRows)
             .OrderBy(p => p.Address.State)
             .ThenBy(p => p.Address.City)
