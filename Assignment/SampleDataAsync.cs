@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Assignment;
@@ -38,7 +36,6 @@ public class SampleDataAsync : IAsyncSampleData
 
     private async IAsyncEnumerable<string> GetUniqueStatesAsync()
     {
-        // Collect all CSV rows asynchronously
         var rows = new List<string>();
         await foreach (var row in CsvRows)
             rows.Add(row);
@@ -54,7 +51,6 @@ public class SampleDataAsync : IAsyncSampleData
         await foreach (var row in CsvRows)
             rows.Add(row);
 
-        // Reuse your existing sync logic
         var sortedStates = DataHelper.ExtractStates(rows).ToList();
 
         return sortedStates.Count == 0
@@ -120,6 +116,4 @@ public class SampleDataAsync : IAsyncSampleData
 
         return uniqueSorted.Skip(1).Aggregate(uniqueSorted.First(), (acc, state) => $"{acc}, {state}");
     }
-
-    
 }

@@ -32,12 +32,11 @@ public class SampleData : ISampleData
            .ThenBy(p => p.Address.Zip)
            .ToList();
 
+
     // 5.
     public IEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(
         Predicate<string> filter)
     {
-        ArgumentNullException.ThrowIfNull(filter);
-
         return People
             .Where(p => filter(p.EmailAddress)) //filters by email address
             .Select(p => (p.FirstName, p.LastName));
@@ -47,8 +46,6 @@ public class SampleData : ISampleData
     public string GetAggregateListOfStatesGivenPeopleCollection(
         IEnumerable<IPerson> people)
     {
-        ArgumentNullException.ThrowIfNull(people);
-
         IEnumerable<string> uniqueStates = people
             .Select(p => p.Address.State)
             .Where(state => !string.IsNullOrWhiteSpace(state))
