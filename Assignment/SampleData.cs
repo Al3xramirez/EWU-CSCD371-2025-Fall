@@ -2,23 +2,27 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-//using static System.Net.WebRequestMethods;
 
 namespace Assignment;
 
 public class SampleData : ISampleData
 {
     // 1.
+    private List<string>? _csvRows;
     public IEnumerable<string> CsvRows
     {
         get
         {
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv");
-            if (!File.Exists(filePath))
+            if (_csvRows == null)
             {
-                throw new FileNotFoundException($"CSV file not found: {filePath}");
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv");
+                if (!File.Exists(filePath))
+                {
+                    throw new FileNotFoundException($"CSV file not found: {filePath}");
+                }
+                _csvRows = File.ReadAllLines(filePath).Skip(1).ToList();
             }
-            return File.ReadAllLines(filePath).Skip(1);
+            return _csvRows;
         }
     }
 
@@ -73,7 +77,7 @@ public class SampleData : ISampleData
                     return person;
                 })
                 .Where(p => p != null) // filter out nulls
-                .Cast<IPerson>()        // tell compiler that after filtering, it's safe
+                .OfType<IPerson>()        // tell compiler that after filtering, it's safe
                 .OrderBy(p => p.Address.State)
                 .ThenBy(p => p.Address.City)
                 .ThenBy(p => p.Address.Zip)

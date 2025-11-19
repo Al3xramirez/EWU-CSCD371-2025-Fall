@@ -23,7 +23,6 @@ public class SampleDataTests
     public void CvsRows_TotalLines_Success()
     {
         SampleData data = new();
-        var rows = data.CsvRows.ToList();
         var allRows = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv")).ToList();
         var dataRows = data.CsvRows.ToList();
 
