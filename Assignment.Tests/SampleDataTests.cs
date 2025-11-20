@@ -20,7 +20,7 @@ public class SampleDataTests
     }
 
     [TestMethod]
-    public void CvsRows_FirstRowSkipped_Success()
+    public void CsvRows_FirstRowSkipped_Success()
     {
         var rows = _sampleData!.CsvRows.ToList();
         string firstLine = rows.First();
@@ -29,7 +29,7 @@ public class SampleDataTests
     }
 
     [TestMethod]
-    public void CvsRows_TotalLines_Success()
+    public void CsvRows_TotalLines_Success()
     {
         
         var allRows = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv")).ToList();
