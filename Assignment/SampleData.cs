@@ -52,12 +52,13 @@ public class SampleData : ISampleData
         get
         {
             List<IPerson> people = CsvRows
+                .Where(row => row.Split(',').Length >= 8) 
                 .Select(row =>
                 {
                     string[] parts = row.Split(',');
                     if (parts.Length < 8)
                     {
-                        return null; // skip invalid rows
+                        return null;
                     }
 
                     IAddress address = new Address(
@@ -76,7 +77,6 @@ public class SampleData : ISampleData
 
                     return person;
                 })
-                .Where(p => p != null) // filter out nulls
                 .OfType<IPerson>()        // tell compiler that after filtering, it's safe
                 .OrderBy(p => p.Address.State)
                 .ThenBy(p => p.Address.City)
@@ -109,8 +109,8 @@ public class SampleData : ISampleData
             .Distinct()
             .OrderBy(state => state);
 
-        string[] statesArray = uniqueStates.ToArray();
-        return statesArray.Length == 0 
+        var statesArray = uniqueStates.ToList();
+        return statesArray.Count == 0 
             ? string.Empty 
             : statesArray.Aggregate((current, next) => current + "," + next);
         

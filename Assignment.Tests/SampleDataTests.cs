@@ -295,7 +295,7 @@ public class SampleDataTests
     {
         SampleData data = new();
         string result = data.GetAggregateListOfStatesGivenPeopleCollection(new List<IPerson>());
-        Assert.AreEqual(string.Empty, result);
+        Assert.AreEqual<string>(string.Empty, result);
     }
 
     [TestMethod]
