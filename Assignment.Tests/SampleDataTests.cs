@@ -11,20 +11,13 @@ namespace Assignment.Tests;
 public class SampleDataTests
 {
     // Fields
-    private ISampleData? _sampleData;
+    private SampleData? _sampleData;
 
     [TestInitialize]
     public void Setup()
     {
         _sampleData = new SampleData();
     }
-    private void VerifyUniqueSortedStates(IEnumerable<string> actual)
-    {
-        Assert.IsNotNull(actual);
-        var expected = actual.Distinct().OrderBy(s => s).ToList();
-        CollectionAssert.AreEqual(expected, actual.ToList());
-    }
-
 
     [TestMethod]
     public void CvsRows_FirstRowSkipped_Success()
@@ -268,7 +261,7 @@ public class SampleDataTests
     public void FilterByEmailAddress_ValidFilter_Success()
     {
         SampleData data = new();
-        Predicate<string> filter = email => email.EndsWith("@Stanford.edu");
+        Predicate<string> filter = email => email.EndsWith("@Stanford.edu", StringComparison.OrdinalIgnoreCase);
         var filteredNames = data.FilterByEmailAddress(filter).ToList();
 
         // Verify that all returned email addresses end with @Stanford.edu
@@ -278,7 +271,7 @@ public class SampleDataTests
 
             Assert.IsNotNull(person);
             Assert.IsTrue(filter(person.EmailAddress));
-            Assert.AreEqual<string>("Stanford.edu", person.EmailAddress.Split('@')[1]);
+            Assert.AreEqual<string>("stanford.edu", person.EmailAddress.Split('@')[1]);
 
         }
     }
@@ -287,7 +280,7 @@ public class SampleDataTests
     public void FilterByEmailAddress_NoMatches_ReturnsEmpty()
     {
         SampleData data = new();
-        Predicate<string> filter = email => email.EndsWith("@67.com");
+        Predicate<string> filter = email => email.EndsWith("@67.com", StringComparison.OrdinalIgnoreCase);
         var filteredNames = data.FilterByEmailAddress(filter).ToList();
         Assert.IsEmpty(filteredNames);
     }

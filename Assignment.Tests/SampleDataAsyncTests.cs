@@ -10,7 +10,7 @@ namespace Assignment.Tests;
 [TestClass]
 public class SampleDataAsyncTests
 {
-    private IAsyncSampleData? _sampleDataAsync;
+    private SampleDataAsync? _sampleDataAsync;
 
     [TestInitialize]
     public void Setup()
@@ -19,7 +19,7 @@ public class SampleDataAsyncTests
     }
 
     //Helper method to convert IAsyncEnermerable to List
-    private async Task<List<T>> ToListAsync<T>(IAsyncEnumerable<T> source)
+    private static async Task<List<T>> ToListAsync<T>(IAsyncEnumerable<T> source)
     {
         var list = new List<T>();
         await foreach (var item in source)
@@ -28,12 +28,12 @@ public class SampleDataAsyncTests
     }
 
     //Helper method to verify CSV rows
-    private async Task VerifyCsvRowsAsync(IAsyncEnumerable<string> rows) { 
+    private static async Task VerifyCsvRowsAsync(IAsyncEnumerable<string> rows) { 
     
         var list = await ToListAsync(rows);
 
         Assert.IsNotNull(list);
-        Assert.IsTrue(list.Any());
+        Assert.IsNotEmpty(list);
 
         string firstLine = list.First();
         string expectedFirstLine = "1,Priscilla,Jenyns,pjenyns0@state.gov,7884 Corry Way,Helena,MT,70577";
@@ -42,7 +42,7 @@ public class SampleDataAsyncTests
     }
 
     //Helper method to verify unique sorted state
-    private void VerifyUniqueSortedStates(IEnumerable<string> actual)
+    private static void VerifyUniqueSortedStates(IEnumerable<string> actual)
     {
         Assert.IsNotNull(actual);
         var expected = actual
@@ -52,7 +52,7 @@ public class SampleDataAsyncTests
         CollectionAssert.AreEqual(expected, actual.ToList());
     }
 
-    private async IAsyncEnumerable<T> ToAsyncEnumerable<T>(IEnumerable<T> source)
+    private static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(IEnumerable<T> source)
     {
         foreach (var item in source)
         {
@@ -105,7 +105,7 @@ public class SampleDataAsyncTests
     [TestMethod]
     public async Task FilterByEmailAddress_ValidPredicate_ReturnsFilteredNamesAsync() { 
     
-        Predicate<string> filter = email => email.EndsWith(".com");
+        Predicate<string> filter = email => email.EndsWith(".com", StringComparison.OrdinalIgnoreCase);
 
         var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv"));
         
@@ -123,7 +123,7 @@ public class SampleDataAsyncTests
     [TestMethod]
     public async Task GetAggregateListOfStatesGivenPeopleCollection_ReturnsStatesAsync() {
 
-        var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "people.csv"));
+        var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv"));
         var people = DataHelper.ExtractPeople(csvRows)
             .OrderBy(p => p.Address.State)
             .ThenBy(p => p.Address.City)
