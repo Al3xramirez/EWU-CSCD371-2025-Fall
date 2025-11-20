@@ -42,7 +42,7 @@ public class SampleData : ISampleData
     {
         IEnumerable<string> uniqueStates = GetUniqueSortedListOfStatesGivenCsvRows();
         string[] statesArray = uniqueStates.ToArray();
-        string result = string.Join(",", statesArray);
+        string result = statesArray.Aggregate((current, next) => current + "," + next);
         return result;
     }
 

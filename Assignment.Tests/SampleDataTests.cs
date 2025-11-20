@@ -101,7 +101,6 @@ public class SampleDataTests
     }
 
     [TestMethod]
-    // Using LINQ to verify the method GetUniqueSortedListOfStatesGivenCsvRows
     public void GetUniqueSortedListOfStatesGivenCsvRows_LinqVerification_Success()
     {
 
