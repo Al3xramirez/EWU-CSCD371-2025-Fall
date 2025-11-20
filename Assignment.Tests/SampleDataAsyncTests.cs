@@ -107,7 +107,7 @@ public class SampleDataAsyncTests
     
         Predicate<string> filter = email => email.EndsWith(".com");
 
-        var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "people.csv"));
+        var csvRows = DataHelper.CsvRows(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv"));
         
         var expected = DataHelper.ExtractPeople(csvRows)
             .Where(Person => filter(Person.EmailAddress))
