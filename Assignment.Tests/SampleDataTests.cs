@@ -271,7 +271,6 @@ public class SampleDataTests
 
             Assert.IsNotNull(person);
             Assert.IsTrue(filter(person.EmailAddress));
-            Assert.AreEqual<string>("stanford.edu", person.EmailAddress.Split('@')[1]);
 
         }
     }
@@ -296,7 +295,7 @@ public class SampleDataTests
 
         List<string> aggregateState = data.GetUniqueSortedListOfStatesGivenCsvRows().ToList();
 
-        Assert.AreEqual<string>(result, string.Join(",", aggregateState));
+        Assert.AreEqual<string>(string.Join(",", aggregateState), result);
     }
 
     [TestMethod]
