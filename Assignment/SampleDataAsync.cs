@@ -98,7 +98,7 @@ public class SampleDataAsync : IAsyncSampleData
         return AggregateStatesAsync(people).GetAwaiter().GetResult();
     }
 
-    private async Task<string> AggregateStatesAsync(IAsyncEnumerable<IPerson> people)
+    private static async Task<string> AggregateStatesAsync(IAsyncEnumerable<IPerson> people)
     {
         List<string> states = new();
 
