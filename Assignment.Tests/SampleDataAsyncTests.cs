@@ -36,6 +36,7 @@ public class SampleDataAsyncTests
         Assert.IsNotEmpty(list);
 
         string firstLine = list.First();
+        // This is hard-coded for our current CSV format. Will need changes if we switch files.
         string expectedFirstLine = "1,Priscilla,Jenyns,pjenyns0@state.gov,7884 Corry Way,Helena,MT,70577";
         Assert.AreEqual(expectedFirstLine, firstLine);
 

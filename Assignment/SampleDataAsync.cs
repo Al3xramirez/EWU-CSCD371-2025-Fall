@@ -9,7 +9,8 @@ namespace Assignment;
 public class SampleDataAsync : IAsyncSampleData
 {
     // 1.
-    private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv");
+    private readonly string _filePath = 
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "People.csv");
     public IAsyncEnumerable<string> CsvRows 
         => GetCsvRowsAsync();
 
@@ -65,7 +66,7 @@ public class SampleDataAsync : IAsyncSampleData
 
     private async IAsyncEnumerable<IPerson> GetPeopleAsync()
     {
-        var rows = new List<string>();
+        List<string> rows = new();
         await foreach (var row in CsvRows)
             rows.Add(row);
         foreach (var person in DataHelper.ExtractPeople(rows))
@@ -94,40 +95,27 @@ public class SampleDataAsync : IAsyncSampleData
     public string GetAggregateListOfStatesGivenPeopleCollection(IAsyncEnumerable<IPerson> people)
     {
         ArgumentNullException.ThrowIfNull(people);
+        return AggregateStatesAsync(people).GetAwaiter().GetResult();
+    }
 
-    
-        List<string> collectedStates = new();
+    private async Task<string> AggregateStatesAsync(IAsyncEnumerable<IPerson> people)
+    {
+        List<string> states = new();
 
-        var asyncEnum = people.GetAsyncEnumerator();
-        try
+        await foreach (var person in people)
         {
-            // Extract states synchronously from async source
-            while (true)
-            {
-                var move = asyncEnum.MoveNextAsync();
+            string? state = person.Address.State?.Trim();
 
-                if (!move.AsTask().Result)
-                    break;
-
-                var current = asyncEnum.Current;
-                var state = current.Address.State?.Trim();
-
-                if (!string.IsNullOrWhiteSpace(state))
-                    collectedStates.Add(state);
-            }
-        }
-        finally
-        {
-            // Proper cleanup
-            asyncEnum.DisposeAsync().AsTask().Wait();
+            if (!string.IsNullOrWhiteSpace(state))
+                states.Add(state);
         }
 
-        // Process the list: unique + sorted
-        var finalStates = collectedStates
-            .Where(s => !string.IsNullOrWhiteSpace(s))
+        var final = states
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(s => s, StringComparer.OrdinalIgnoreCase);
 
-        return string.Join(", ", finalStates);
+        return string.Join(", ", final);
     }
+
+       
 }
