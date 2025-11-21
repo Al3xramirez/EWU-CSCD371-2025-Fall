@@ -16,13 +16,9 @@ public class SampleData : ISampleData
         DataHelper.ExtractStates(CsvRows);
 
     // 3.
-    public string GetAggregateSortedListOfStatesUsingCsvRows()
-    {
-        IEnumerable<string> uniqueStates = GetUniqueSortedListOfStatesGivenCsvRows();
-        string[] statesArray = uniqueStates.ToArray();
-        string result = string.Join(",", statesArray);
-        return result;
-    }
+    public string GetAggregateSortedListOfStatesUsingCsvRows() =>
+        string.Join(",", GetUniqueSortedListOfStatesGivenCsvRows());
+    
 
     // 4.
     public IEnumerable<IPerson> People =>
